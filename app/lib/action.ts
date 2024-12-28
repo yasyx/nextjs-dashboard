@@ -11,19 +11,19 @@ export async function authenticate(
   prevState: string | undefined,
   formData: FormData
 ) {
-    try {
-        await signIn('credentials', formData);
-    } catch (error) {
-        if (error instanceof AuthError) {
-            switch (error.type) {
-              case 'CredentialsSignin':
-                return 'Invalid credentials.';
-              default:
-                return 'Something went wrong.';
-            }
-          }
-          throw error;
+  try {
+    await signIn("credentials", formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "CredentialsSignin":
+          return "Invalid credentials.";
+        default:
+          return "Something went wrong.";
+      }
     }
+    throw error;
+  }
 }
 
 const FromSchema = z.object({
@@ -65,7 +65,8 @@ export async function createInvoice(prevState: State, formData: FormData) {
   `;
   } catch (error) {
     return {
-      message: "Database Error: Failed to Create Invoice." + error,
+      errors: error,
+      message: "Database Error: Failed to Create Invoice.",
     };
   }
 
@@ -105,7 +106,8 @@ export async function updateInvoice(
   `;
   } catch (error) {
     return {
-      message: "Database Error: Failed to Update Invoice." + error,
+      errors: error,
+      message: "Database Error: Failed to Update Invoice.",
     };
   }
 
@@ -120,11 +122,9 @@ export async function deleteInvoice(id: string) {
     DELETE FROM invoices WHERE id = ${id}
 `;
     revalidatePath("/dashboard/invoices");
-    return { message: "Deleted Invoice." };
+    console.log("Deleted Invoice.")
   } catch (error) {
-    return {
-      message: "Database Error: Failed to Delete Invoice." + error,
-    };
+    console.log("Database Error: Failed to Delete Invoice.")
   }
 }
 
